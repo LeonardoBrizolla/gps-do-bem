@@ -1,4 +1,4 @@
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import {
   Box,
   Button,
@@ -13,6 +13,7 @@ import {
 import { FiLock, FiUser } from "react-icons/fi";
 import { FaGoogle } from "react-icons/fa";
 import Head from "next/head";
+import { signIn, getSession } from "next-auth/react";
 
 const Home: NextPage = () => {
   const theme = useTheme();
@@ -20,7 +21,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>LOGIN - GPS DO BEM</title>
+        <title>GPS do bem</title>
       </Head>
       <Flex
         width="100%"
@@ -94,7 +95,7 @@ const Home: NextPage = () => {
                 leftIcon={<FaGoogle color={theme.colors.gray["100"]} />}
                 color={theme.colors.gray["100"]}
                 _hover={{ backgroundColor: "gray.700" }}
-                onClick={() => {}}
+                onClick={() => signIn("google")}
               >
                 Google
               </Button>
@@ -104,6 +105,25 @@ const Home: NextPage = () => {
       </Flex>
     </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context);
+
+  if (session) {
+    return {
+      redirect: {
+        destination: "/home",
+        permanent: false
+      }
+    };
+  }
+
+  return {
+    props: {
+      session
+    }
+  };
 };
 
 export default Home;

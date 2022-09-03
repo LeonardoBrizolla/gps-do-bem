@@ -1,6 +1,10 @@
 import { Button, Flex, Image, Text } from "@chakra-ui/react";
+import { GetServerSideProps } from "next";
+import { useSession, signOut, getSession } from "next-auth/react";
 
 function Home() {
+  const { data: session } = useSession();
+  console.log(session);
   return (
     <Flex
       width="100%"
@@ -10,19 +14,22 @@ function Home() {
       justifyContent="center"
     >
       <Text color="gray.400" fontSize="md">
-        Welcome abord
+        Bem vindo
       </Text>
       <Flex marginTop="1rem" alignItems="center">
-        <Image
-          src="https://github.com/leonardobrizolla.png"
-          alt="User avatar"
-          width="88px"
-          height="88px"
-          borderRadius="full"
-          marginRight="1rem"
-        />
+        {session?.user?.image && (
+          <Image
+            src={session?.user?.image}
+            alt="User avatar"
+            width="88px"
+            height="88px"
+            borderRadius="full"
+            marginRight="1rem"
+          />
+        )}
+
         <Text color="gray.100" marginTop="0.5rem" fontSize="xl">
-          Leonardo Brizolla
+          {session?.user?.name}
         </Text>
       </Flex>
 
@@ -32,12 +39,31 @@ function Home() {
         marginBottom="1rem"
         width="256px"
         backgroundColor="secondary.500"
-        onClick={() => {}}
+        onClick={() => signOut()}
       >
         Sair
       </Button>
     </Flex>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false
+      }
+    };
+  }
+
+  return {
+    props: {
+      session
+    }
+  };
+};
 
 export default Home;
