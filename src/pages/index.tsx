@@ -10,7 +10,8 @@ import {
   Text,
   useTheme
 } from "@chakra-ui/react";
-import { FiGithub, FiLock, FiUser } from "react-icons/fi";
+import { FiLock, FiUser } from "react-icons/fi";
+import { FaGoogle } from "react-icons/fa";
 import Head from "next/head";
 
 const Home: NextPage = () => {
@@ -90,12 +91,12 @@ const Home: NextPage = () => {
               </Text>
               <Button
                 backgroundColor="gray.600"
-                leftIcon={<FiGithub color={theme.colors.gray["100"]} />}
+                leftIcon={<FaGoogle color={theme.colors.gray["100"]} />}
                 color={theme.colors.gray["100"]}
                 _hover={{ backgroundColor: "gray.700" }}
                 onClick={() => {}}
               >
-                Github
+                Google
               </Button>
             </Flex>
           </Box>
