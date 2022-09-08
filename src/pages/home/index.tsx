@@ -4,7 +4,7 @@ import { useSession, signOut, getSession } from "next-auth/react";
 
 function Home() {
   const { data: session } = useSession();
-  console.log(session);
+
   return (
     <Flex
       width="100%"
