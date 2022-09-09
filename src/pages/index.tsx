@@ -1,5 +1,9 @@
 import type { GetServerSideProps, NextPage } from "next";
 import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
   Box,
   Button,
   Flex,
@@ -13,10 +17,65 @@ import {
 import { FiLock, FiUser } from "react-icons/fi";
 import { FaGoogle } from "react-icons/fa";
 import Head from "next/head";
-import { signIn, getSession } from "next-auth/react";
+import { signIn, getSession, useSession } from "next-auth/react";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { useRouter } from "next/router";
+
+interface PageStateProps {
+  error: string;
+  processing: boolean;
+}
 
 const Home: NextPage = () => {
+  const router = useRouter();
   const theme = useTheme();
+  const { register, handleSubmit } = useForm();
+  const [pageState, setPageState] = useState<PageStateProps>({
+    error: "",
+    processing: false
+  });
+
+  function simplifyError(error: string) {
+    const errorMap = {
+      CredentialsSignin: "E-mail ou senha inválidos"
+    };
+    return errorMap[error] ?? "Algo deu errado";
+  }
+
+  async function handleSignIn(data: any) {
+    setPageState((old) => ({ ...old, processing: true, error: "" }));
+
+    await signIn("credentials", {
+      email: data.email,
+      password: data.password,
+      redirect: false,
+      callbackUrl: `${window.location.origin}/home`
+    })
+      .then((res: any) => {
+        if (res?.ok) {
+          setPageState((old) => ({
+            ...old,
+            processing: false
+          }));
+
+          router.push(res.url);
+        } else {
+          setPageState((old) => ({
+            ...old,
+            processing: false,
+            error: res.error ?? "Algo deu errado"
+          }));
+        }
+      })
+      .catch((err) => {
+        setPageState((old) => ({
+          ...old,
+          processing: false,
+          error: err.error ?? "Algo deu errado"
+        }));
+      });
+  }
 
   return (
     <>
@@ -29,7 +88,7 @@ const Home: NextPage = () => {
         alignItems="center"
         justifyContent="center"
       >
-        <form onSubmit={() => {}}>
+        <form onSubmit={handleSubmit(handleSignIn)}>
           <Box width="428px">
             <Text
               color="gray.100"
@@ -39,18 +98,22 @@ const Home: NextPage = () => {
               fontWeight={600}
               marginBottom="2rem"
             >
-              Sign in to your account
+              GPS DO BEM
             </Text>
+
             <InputGroup>
               <InputLeftElement pointerEvents="none">
                 <FiUser color={theme.colors.gray["500"]} />
               </InputLeftElement>
               <Input
+                {...register("email")}
+                name="email"
                 placeholder="Email"
                 marginBottom="1rem"
                 borderColor="gray.700"
                 backgroundColor="gray.700"
                 color="gray.100"
+                isRequired
               />
             </InputGroup>
             <InputGroup>
@@ -58,15 +121,27 @@ const Home: NextPage = () => {
                 <FiLock color={theme.colors.gray["500"]} />
               </InputLeftElement>
               <Input
+                {...register("password")}
+                name="password"
                 placeholder="Senha"
                 borderColor="gray.700"
                 backgroundColor="gray.700"
                 color="gray.100"
                 type="password"
+                isRequired
               />
             </InputGroup>
 
             <Flex direction="column" alignItems="center">
+              {pageState.error !== "" && (
+                <Alert status="error" marginTop="2rem">
+                  <AlertIcon />
+                  <AlertTitle>Alerta:</AlertTitle>
+                  <AlertDescription>
+                    {simplifyError(pageState.error)}
+                  </AlertDescription>
+                </Alert>
+              )}
               <Button
                 type="submit"
                 marginTop="2rem"
