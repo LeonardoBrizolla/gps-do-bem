@@ -10,6 +10,7 @@ export default NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string
     }),
     CredentialsProvider({
+      id: "credentials",
       name: "gps-do-bem-backend-credentials",
       credentials: {},
       async authorize(credentials: any) {
@@ -36,6 +37,7 @@ export default NextAuth({
         } catch (err: any) {
           console.log("Authorize error:", err.response.data);
         }
+        return null;
       }
     })
   ],
