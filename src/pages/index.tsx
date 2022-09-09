@@ -37,7 +37,7 @@ const Home: NextPage = () => {
   });
 
   function simplifyError(error: string) {
-    const errorMap = {
+    const errorMap: any = {
       CredentialsSignin: "E-mail ou senha inválidos"
     };
     return errorMap[error] ?? "Algo deu errado";
