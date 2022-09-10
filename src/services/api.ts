@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: `${process.env.BASEURL}`
+  baseURL: "https://gps-do-bem-back-end.vercel.app"
 });
 
 export default api;
