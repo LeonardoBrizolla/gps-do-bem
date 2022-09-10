@@ -320,7 +320,7 @@ function SignUp() {
                     <Input
                       {...registerOng("name")}
                       name="name"
-                      placeholder="Nome da sua empresa"
+                      placeholder="Nome da sua ONG"
                       marginBottom="1rem"
                       borderColor="gray.700"
                       backgroundColor="gray.700"
