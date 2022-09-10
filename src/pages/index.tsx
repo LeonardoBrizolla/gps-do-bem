@@ -90,7 +90,7 @@ const Home: NextPage = () => {
         justifyContent="center"
       >
         <form onSubmit={handleSubmit(handleSignIn)}>
-          <Box width="428px">
+          <Box width="528px" bg="#202024" padding={10} borderRadius={10}>
             <Text
               color="gray.100"
               fontSize="xxx-large"
