@@ -21,6 +21,7 @@ import { signIn, getSession, useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import LinkNext from "next/link";
 
 interface PageStateProps {
   error: string;
@@ -80,7 +81,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>GPS do bem</title>
+        <title>Login | GPS do Bem</title>
       </Head>
       <Flex
         width="100%"
@@ -92,7 +93,7 @@ const Home: NextPage = () => {
           <Box width="428px">
             <Text
               color="gray.100"
-              fontSize="xl"
+              fontSize="xxx-large"
               textAlign="center"
               fontFamily="heading"
               fontWeight={600}
@@ -152,13 +153,16 @@ const Home: NextPage = () => {
               >
                 Entrar
               </Button>
-              <Link href="#" color="gray.100">
-                Não tem uma conta?
-                <Text as="span" color="secondary.500">
-                  {" "}
-                  Registre-se
-                </Text>
-              </Link>
+
+              <LinkNext href="/signup">
+                <Link color="gray.100">
+                  Não tem uma conta?
+                  <Text as="span" color="secondary.500">
+                    {" "}
+                    Registre-se
+                  </Text>
+                </Link>
+              </LinkNext>
             </Flex>
 
             <Flex marginTop="2rem" alignItems="center" justifyContent="center">
