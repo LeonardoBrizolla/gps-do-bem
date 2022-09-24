@@ -49,6 +49,7 @@ export default function Simple() {
 
   async function handlePesquisaOng(serviceOng: any) {
     setPageState((old) => ({ ...old, processing: true, error: "" }));
+    setServices([]);
 
     await api
       .post("/services", serviceOng)
