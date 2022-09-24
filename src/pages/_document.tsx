@@ -6,7 +6,7 @@ export default function Document() {
       <Head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
-
+        <link rel="shortcut icon" href="/icon-gps-do-bem.png" />
         <link
           href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap"
           rel="stylesheet"

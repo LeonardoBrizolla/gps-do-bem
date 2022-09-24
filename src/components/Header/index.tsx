@@ -81,7 +81,7 @@ export function Header() {
                   <Avatar
                     size={"sm"}
                     src={
-                      "https://images.unsplash.com/photo-1493612276216-ee3925520721?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&q=80"
+                      "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                     }
                   />
                 )}

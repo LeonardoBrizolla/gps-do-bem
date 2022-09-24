@@ -27,8 +27,8 @@ import {
   FiUser,
   FiMail,
   FiArrowLeft,
-  FiUsers,
-  FiBriefcase
+  FiBriefcase,
+  FiTool
 } from "react-icons/fi";
 import api from "../../services/api";
 import LinkNext from "next/link";
@@ -42,6 +42,7 @@ interface PageStateProps {
 interface DataForm {
   email: string;
   name: string;
+  services: string;
   password: string;
   confirmpassword: string;
 }
@@ -100,6 +101,7 @@ function SignUp() {
       .post("/auth/register", {
         name: data.name,
         email: data.email,
+        service: data.service,
         password: data.password,
         confirmpassword: data.confirmpassword,
         isOng: true
@@ -155,6 +157,7 @@ function SignUp() {
           </TabList>
 
           <TabPanels bg="#202024" padding={10} borderRadius={10}>
+            {/* USER */}
             <TabPanel>
               <form onSubmit={handleSubmit(handleSignUpUser)}>
                 <Text
@@ -285,6 +288,8 @@ function SignUp() {
                 </Box>
               </form>
             </TabPanel>
+
+            {/* ONS */}
             <TabPanel>
               <form onSubmit={handleSubmitOng(handleSignUpOng)}>
                 <Text
@@ -321,6 +326,22 @@ function SignUp() {
                       {...registerOng("name")}
                       name="name"
                       placeholder="Nome da sua ONG"
+                      marginBottom="1rem"
+                      borderColor="gray.700"
+                      backgroundColor="gray.700"
+                      color="gray.100"
+                      isRequired
+                    />
+                  </InputGroup>
+                  <InputGroup>
+                    <InputLeftElement pointerEvents="none">
+                      <FiTool color={theme.colors.gray["500"]} />
+                    </InputLeftElement>
+                    <Input
+                      {...registerOng("service")}
+                      name="service"
+                      title="Qual serviço seu ONG atende?"
+                      placeholder="Serviço"
                       marginBottom="1rem"
                       borderColor="gray.700"
                       backgroundColor="gray.700"
