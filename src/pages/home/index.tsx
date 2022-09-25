@@ -203,7 +203,7 @@ export default function Simple() {
                 flexWrap={"wrap"}
               >
                 {services[0]?.user?.map((item: any) => (
-                  <Center py={6} key={item._id}>
+                  <Center py={6} key={item._id} maxW={"200px"}>
                     <Box
                       maxW={"270px"}
                       w={"full"}
@@ -233,7 +233,7 @@ export default function Simple() {
                         />
                       </Flex>
 
-                      <Box p={6}>
+                      <Box p={6} flex={"1"} flexDirection={"column"}>
                         <Stack spacing={0} align={"center"} mb={5}>
                           <Heading
                             fontSize={"2xl"}
@@ -244,19 +244,29 @@ export default function Simple() {
                           </Heading>
                           <Text color={"gray.500"}>{item.email}</Text>
                         </Stack>
-                        <Button
-                          w={"full"}
-                          // mt={8}
-                          bg="#151f21"
-                          color={"gray.100"}
-                          rounded={"md"}
-                          _hover={{
-                            transform: "translateY(-2px)",
-                            boxShadow: "lg"
-                          }}
+                        <Stack spacing={0} align={"center"} mb={2}>
+                          <Text color={"gray.500"}>{item.service}</Text>
+                        </Stack>
+                        <Flex
+                          flex={"1"}
+                          flexDirection={"column"}
+                          justifyContent={"flex-end"}
+                          alignItems={"flex-end"}
                         >
-                          Mais Informações
-                        </Button>
+                          <Button
+                            w={"full"}
+                            // mt={8}
+                            bg="#151f21"
+                            color={"gray.100"}
+                            rounded={"md"}
+                            _hover={{
+                              transform: "translateY(-2px)",
+                              boxShadow: "lg"
+                            }}
+                          >
+                            Mais Informações
+                          </Button>
+                        </Flex>
                       </Box>
                     </Box>
                   </Center>
