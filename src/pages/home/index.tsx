@@ -14,7 +14,7 @@ import {
   Alert,
   AlertIcon,
   AlertTitle,
-  AlertDescription
+  AlertDescription,
 } from "@chakra-ui/react";
 import { getSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
@@ -34,7 +34,7 @@ interface PageStateProps {
 export default function Simple() {
   const [pageState, setPageState] = useState<PageStateProps>({
     error: "",
-    processing: false
+    processing: false,
   });
   const { register, handleSubmit } = useForm();
   const [services, setServices] = useState([]) as any;
@@ -42,7 +42,7 @@ export default function Simple() {
 
   function simplifyError(error: string) {
     const errorMap: any = {
-      CredentialsSignin: "Serviço não encontrado!"
+      CredentialsSignin: "Serviço não encontrado!",
     };
     return errorMap[error] ?? "Serviço não encontrado";
   }
@@ -61,7 +61,7 @@ export default function Simple() {
           router.push("#ongFounded");
           setPageState((old) => ({
             ...old,
-            processing: false
+            processing: false,
           }));
         } else {
           console.log("oi", response);
@@ -69,7 +69,7 @@ export default function Simple() {
           setPageState((old) => ({
             ...old,
             processing: false,
-            error: "Serviço não encontrado"
+            error: "Serviço não encontrado",
           }));
         }
       })
@@ -79,7 +79,7 @@ export default function Simple() {
         setPageState((old) => ({
           ...old,
           processing: false,
-          error: error.error ?? "Serviço não encontrado"
+          error: error.error ?? "Serviço não encontrado",
         }));
       });
   }
@@ -88,193 +88,195 @@ export default function Simple() {
       <Head>
         <title>Home | GPS do Bem</title>
       </Head>
-      <Header />
-      <Box p={2}>
-        <Container maxW={"container.lg"}>
-          <Stack
-            as={Box}
-            textAlign={"center"}
-            alignItems={"center"}
-            spacing={{ base: 4, md: 10 }}
-            py={{ base: 10, md: 20 }}
-          >
-            <Box boxSize="180px">
-              <Image src="/icon-gps-do-bem.png" alt="Logo GPS" />
-            </Box>
-            <Heading
-              color={"yellow.400"}
-              fontWeight="bold"
-              fontSize={{ base: "2xl", sm: "4xl", md: "6xl" }}
-              lineHeight={"110%"}
-              fontFamily="Roboto"
+      <Box minHeight="100vh" m="0">
+        <Header />
+        <Box p={2}>
+          <Container maxW={"container.lg"}>
+            <Stack
+              as={Box}
+              textAlign={"center"}
+              alignItems={"center"}
+              spacing={{ base: 4, md: 10 }}
+              py={{ base: 10, md: 20 }}
             >
-              GPS DO BEM <br />
-            </Heading>
-            <Text
-              color={"gray.100"}
-              maxW={"2xl"}
-              fontFamily="Roboto"
-              fontSize={"lg"}
-            >
-              Bem-vindo ao GPS DO BEM, abaixo você poderá pesquisar pelo{" "}
-              <strong>serviço</strong> da ONG que você deseja
-              encontrar/conhecer:
-            </Text>
-            <form onSubmit={handleSubmit(handlePesquisaOng)}>
-              <Stack
-                direction={"row"}
-                spacing={3}
-                align={"center"}
-                alignSelf={"center"}
-                position={"relative"}
-                onSubmit={() => handlePesquisaOng}
+              <Box boxSize="180px">
+                <Image src="/icon-gps-do-bem.png" alt="Logo GPS" />
+              </Box>
+              <Heading
+                color={"yellow.400"}
+                fontWeight="bold"
+                fontSize={{ base: "2xl", sm: "4xl", md: "6xl" }}
+                lineHeight={"110%"}
+                fontFamily="Roboto"
               >
-                <Input
-                  type={"text"}
-                  {...register("serviceOng")}
-                  name="serviceOng"
-                  placeholder={"Roupas..."}
-                  color={useColorModeValue("gray.800", "gray.200")}
-                  bg={useColorModeValue("gray.100", "gray.600")}
-                  rounded={"base"}
-                  maxW={"xl"}
-                  w="auto"
-                  minW={"sm"}
-                  size={"lg"}
-                  fontFamily="Roboto"
-                  border={0}
-                  _focus={{
-                    bg: useColorModeValue("gray.200", "gray.800"),
-                    outline: "none"
-                  }}
-                />
-                <Button
-                  type="submit"
-                  size={"lg"}
-                  colorScheme={"green"}
-                  bg={
-                    "linear-gradient(to bottom, rgb(123, 0, 255, 0.9), rgb(250, 8, 255, 0.87))"
-                  }
-                  w={"150px"}
-                  rounded={"base"}
-                  transition={"ease"}
-                  transitionDuration={"10"}
-                  _hover={{
-                    bg: "linear-gradient(to bottom, rgb(123, 0, 255, 0.5), rgb(300, 8, 255, 0.5))"
-                  }}
-                >
-                  Pesquisar
-                </Button>
-              </Stack>
-              {pageState.error !== "" && (
-                <Alert status="error" marginTop="1rem">
-                  <AlertIcon />
-                  <AlertTitle>Alerta:</AlertTitle>
-                  <AlertDescription>
-                    {simplifyError(pageState.error)}
-                  </AlertDescription>
-                </Alert>
-              )}
-            </form>
-          </Stack>
-        </Container>
-      </Box>
-      <Box bgColor="#282a36" id="ongFounded">
-        <Container maxWidth={"container.lg"}>
-          {services[0]?.user?.length > 0 && (
-            <>
-              <Flex alignItems={"center"} justifyContent={"center"}>
-                <Text
-                  mt="10"
-                  fontSize="3xl"
-                  color="yellow.400"
-                  fontWeight="bold"
-                  fontFamily="Roboto"
-                >
-                  ONS ENCONTRADAS
-                </Text>
-              </Flex>
-              <Flex
-                maxWidth={"container.lg"}
-                alignItems={"center"}
-                justifyContent={"space-around"}
-                marginTop={"5"}
-                gap={"10"}
-                flexWrap={"wrap"}
+                GPS DO BEM <br />
+              </Heading>
+              <Text
+                color={"gray.100"}
+                maxW={"2xl"}
+                fontFamily="Roboto"
+                fontSize={"lg"}
               >
-                {services[0]?.user?.map((item: any) => (
-                  <Center py={6} key={item._id} maxW={"200px"}>
-                    <Box
-                      maxW={"270px"}
-                      w={"full"}
-                      bg="gray.100"
-                      boxShadow={"2xl"}
-                      rounded={"md"}
-                      overflow={"hidden"}
-                    >
-                      <Image
-                        h={"120px"}
+                Bem-vindo ao GPS DO BEM, abaixo você poderá pesquisar pelo{" "}
+                <strong>serviço</strong> da ONG que você deseja
+                encontrar/conhecer:
+              </Text>
+              <form onSubmit={handleSubmit(handlePesquisaOng)}>
+                <Stack
+                  direction={"row"}
+                  spacing={3}
+                  align={"center"}
+                  alignSelf={"center"}
+                  position={"relative"}
+                  onSubmit={() => handlePesquisaOng}
+                >
+                  <Input
+                    type={"text"}
+                    {...register("serviceOng")}
+                    name="serviceOng"
+                    placeholder={"Roupas..."}
+                    color={useColorModeValue("gray.800", "gray.200")}
+                    bg={useColorModeValue("gray.100", "gray.600")}
+                    rounded={"base"}
+                    maxW={"xl"}
+                    w="auto"
+                    minW={"sm"}
+                    size={"lg"}
+                    fontFamily="Roboto"
+                    border={0}
+                    _focus={{
+                      bg: useColorModeValue("gray.200", "gray.800"),
+                      outline: "none",
+                    }}
+                  />
+                  <Button
+                    type="submit"
+                    size={"lg"}
+                    colorScheme={"green"}
+                    bg={
+                      "linear-gradient(to bottom, rgb(123, 0, 255, 0.9), rgb(250, 8, 255, 0.87))"
+                    }
+                    w={"150px"}
+                    rounded={"base"}
+                    transition={"ease"}
+                    transitionDuration={"10"}
+                    _hover={{
+                      bg: "linear-gradient(to bottom, rgb(123, 0, 255, 0.5), rgb(300, 8, 255, 0.5))",
+                    }}
+                  >
+                    Pesquisar
+                  </Button>
+                </Stack>
+                {pageState.error !== "" && (
+                  <Alert status="error" marginTop="1rem">
+                    <AlertIcon />
+                    <AlertTitle>Alerta:</AlertTitle>
+                    <AlertDescription>
+                      {simplifyError(pageState.error)}
+                    </AlertDescription>
+                  </Alert>
+                )}
+              </form>
+            </Stack>
+          </Container>
+        </Box>
+        <Box bgColor="#282a36" id="ongFounded">
+          <Container maxWidth={"container.lg"}>
+            {services[0]?.user?.length > 0 && (
+              <>
+                <Flex alignItems={"center"} justifyContent={"center"}>
+                  <Text
+                    mt="10"
+                    fontSize="3xl"
+                    color="yellow.400"
+                    fontWeight="bold"
+                    fontFamily="Roboto"
+                  >
+                    ONGS ENCONTRADAS
+                  </Text>
+                </Flex>
+                <Flex
+                  maxWidth={"container.lg"}
+                  alignItems={"center"}
+                  justifyContent={"space-around"}
+                  marginTop={"5"}
+                  gap={"10"}
+                  flexWrap={"wrap"}
+                >
+                  {services[0]?.user?.map((item: any) => (
+                    <Center py={6} key={item._id} maxW={"200px"}>
+                      <Box
+                        maxW={"270px"}
                         w={"full"}
-                        src={
-                          "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=460&q=80"
-                        }
-                        alt={""}
-                        objectFit={"cover"}
-                      />
-                      <Flex justify={"center"} mt={-12}>
-                        <Avatar
-                          size={"xl"}
+                        bg="gray.100"
+                        boxShadow={"2xl"}
+                        rounded={"md"}
+                        overflow={"hidden"}
+                      >
+                        <Image
+                          h={"120px"}
+                          w={"full"}
                           src={
-                            "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                            "https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=460&q=80"
                           }
-                          css={{
-                            border: "2px solid white"
-                          }}
+                          alt={""}
+                          objectFit={"cover"}
                         />
-                      </Flex>
-
-                      <Box p={6} flex={"1"} flexDirection={"column"}>
-                        <Stack spacing={0} align={"center"} mb={5}>
-                          <Heading
-                            fontSize={"2xl"}
-                            fontWeight={500}
-                            fontFamily={"body"}
-                          >
-                            {item.name}
-                          </Heading>
-                          <Text color={"gray.500"}>{item.email}</Text>
-                        </Stack>
-                        <Stack spacing={0} align={"center"} mb={2}>
-                          <Text color={"gray.500"}>{item.service}</Text>
-                        </Stack>
-                        <Flex
-                          flex={"1"}
-                          flexDirection={"column"}
-                          justifyContent={"flex-end"}
-                          alignItems={"flex-end"}
-                        >
-                          <Button
-                            w={"full"}
-                            // mt={8}
-                            bg="#151f21"
-                            color={"gray.100"}
-                            rounded={"md"}
-                            _hover={{
-                              transform: "translateY(-2px)",
-                              boxShadow: "lg"
+                        <Flex justify={"center"} mt={-12}>
+                          <Avatar
+                            size={"xl"}
+                            src={
+                              "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                            }
+                            css={{
+                              border: "2px solid white",
                             }}
-                          >
-                            Mais Informações
-                          </Button>
+                          />
                         </Flex>
+
+                        <Box p={6} flex={"1"} flexDirection={"column"}>
+                          <Stack spacing={0} align={"center"} mb={5}>
+                            <Heading
+                              fontSize={"2xl"}
+                              fontWeight={500}
+                              fontFamily={"body"}
+                            >
+                              {item.name}
+                            </Heading>
+                            <Text color={"gray.500"}>{item.email}</Text>
+                          </Stack>
+                          <Stack spacing={0} align={"center"} mb={2}>
+                            <Text color={"gray.500"}>{item.service}</Text>
+                          </Stack>
+                          <Flex
+                            flex={"1"}
+                            flexDirection={"column"}
+                            justifyContent={"flex-end"}
+                            alignItems={"flex-end"}
+                          >
+                            <Button
+                              w={"full"}
+                              // mt={8}
+                              bg="#151f21"
+                              color={"gray.100"}
+                              rounded={"md"}
+                              _hover={{
+                                transform: "translateY(-2px)",
+                                boxShadow: "lg",
+                              }}
+                            >
+                              Mais Informações
+                            </Button>
+                          </Flex>
+                        </Box>
                       </Box>
-                    </Box>
-                  </Center>
-                ))}
-              </Flex>
-            </>
-          )}
-        </Container>
+                    </Center>
+                  ))}
+                </Flex>
+              </>
+            )}
+          </Container>
+        </Box>
       </Box>
       <Footer />
     </>
@@ -288,14 +290,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
       redirect: {
         destination: "/",
-        permanent: false
-      }
+        permanent: false,
+      },
     };
   }
 
   return {
     props: {
-      session
-    }
+      session,
+    },
   };
 };

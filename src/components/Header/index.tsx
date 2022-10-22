@@ -1,4 +1,4 @@
-// import { ReactNode } from "react";
+import { ReactNode } from "react";
 import {
   Box,
   Flex,
@@ -15,36 +15,38 @@ import {
   useDisclosure,
   // Stack,
   Text,
-  VStack
+  VStack,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { useSession, signOut } from "next-auth/react";
 import { FiChevronDown } from "react-icons/fi";
+import LinkNext from "next/link";
 
-// const Links = ["Pesquisa", "Sobre"];
+const Links = ["Fale Conosco"];
 
-// const NavLink = ({ children }: { children: ReactNode }) => (
-//   <Link
-//     color="white"
-//     px={2}
-//     py={1}
-//     rounded={"md"}
-//     _hover={{
-//       textDecoration: "none",
-//       bg: "gray.700"
-//     }}
-//     href={"#"}
-//   >
-//     {children}
-//   </Link>
-// );
+const NavLink = ({ children }: { children: ReactNode }) => (
+  <LinkNext href="/contact">
+    <Link
+      color="white"
+      px={2}
+      py={1}
+      rounded={"md"}
+      _hover={{
+        textDecoration: "none",
+        bg: "gray.700",
+      }}
+    >
+      {children}
+    </Link>
+  </LinkNext>
+);
 
 export function Header() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { data: session } = useSession();
 
   return (
-    <Box bg={"gray.900"} px={4}>
+    <Box bg={"gray.900"} px={4} position="fixed" w="100%" zIndex={"500"}>
       <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
         <IconButton
           size={"md"}
@@ -56,14 +58,14 @@ export function Header() {
         <HStack spacing={8} alignItems={"center"}>
           <Box>
             <Text color="white" fontWeight={900}>
-              GPS DO BEM
+              <LinkNext href="/home">GPS DO BEM</LinkNext>
             </Text>
           </Box>
-          {/* <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
+          <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
             {Links.map((link) => (
               <NavLink key={link}>{link}</NavLink>
             ))}
-          </HStack> */}
+          </HStack>
         </HStack>
         <Flex alignItems={"center"}>
           <Menu>
