@@ -87,7 +87,7 @@ const MapPage = ({ onSaveLocation, onSaveAddress }: any) => {
           center={position}
           zoom={15}
         >
-          <MarkerF position={position} label="leo" />
+          <MarkerF position={position} />
         </GoogleMap>
       </LoadScript>
     </Flex>
