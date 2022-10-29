@@ -16,7 +16,7 @@ import {
   TabPanels,
   Tabs,
   Text,
-  useTheme
+  useTheme,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -28,10 +28,12 @@ import {
   FiMail,
   FiArrowLeft,
   FiBriefcase,
-  FiTool
+  FiTool,
+  FiMap,
 } from "react-icons/fi";
 import api from "../../services/api";
 import LinkNext from "next/link";
+import MapPage from "./MapPage";
 
 interface PageStateProps {
   error: string;
@@ -54,8 +56,14 @@ function SignUp() {
   const [pageState, setPageState] = useState<PageStateProps>({
     error: "",
     processing: false,
-    ok: false
+    ok: false,
   });
+  const [address, setAddress] = useState("");
+  const [location, setLocation] = useState({
+    lat: 0,
+    lng: 0,
+  });
+
   const router = useRouter();
 
   async function handleSignUpUser(data: any) {
@@ -67,14 +75,14 @@ function SignUp() {
         email: data.email,
         password: data.password,
         confirmpassword: data.confirmpassword,
-        isOng: false
+        isOng: false,
       })
       .then(function (response) {
         setPageState((old) => ({
           ...old,
           processing: false,
           error: "",
-          ok: true
+          ok: true,
         }));
 
         if (response.status === 201) {
@@ -89,7 +97,7 @@ function SignUp() {
           ...old,
           error: error.response.data.msg,
           processing: false,
-          ok: false
+          ok: false,
         }));
       });
   }
@@ -104,14 +112,16 @@ function SignUp() {
         service: data.service,
         password: data.password,
         confirmpassword: data.confirmpassword,
-        isOng: true
+        isOng: true,
+        address: address,
+        location: location,
       })
       .then(function (response) {
         setPageState((old) => ({
           ...old,
           processing: false,
           error: "",
-          ok: true
+          ok: true,
         }));
 
         if (response.status === 201) {
@@ -126,7 +136,7 @@ function SignUp() {
           ...old,
           error: error.response.data.msg,
           processing: false,
-          ok: false
+          ok: false,
         }));
       });
   }
@@ -292,129 +302,167 @@ function SignUp() {
             {/* ONS */}
             <TabPanel>
               <form onSubmit={handleSubmitOng(handleSignUpOng)}>
-                <Text
-                  color="gray.100"
-                  fontSize="xx-large"
-                  textAlign="center"
-                  fontFamily="heading"
-                  fontWeight={800}
-                  marginBottom="2rem"
+                <Flex
+                  alignItems={"center"}
+                  alignContent={"center"}
+                  justifyContent={"center"}
+                  width="100%"
+                  direction={"column"}
                 >
-                  Cadastro de ONG
-                </Text>
-                <Box width="528px">
-                  <InputGroup>
-                    <InputLeftElement pointerEvents="none">
-                      <FiMail color={theme.colors.gray["500"]} />
-                    </InputLeftElement>
-                    <Input
-                      {...registerOng("email")}
-                      name="email"
-                      placeholder="E-mail"
-                      marginBottom="1rem"
-                      borderColor="gray.700"
-                      backgroundColor="gray.700"
-                      color="gray.100"
-                      isRequired
-                    />
-                  </InputGroup>
-                  <InputGroup>
-                    <InputLeftElement pointerEvents="none">
-                      <FiBriefcase color={theme.colors.gray["500"]} />
-                    </InputLeftElement>
-                    <Input
-                      {...registerOng("name")}
-                      name="name"
-                      placeholder="Nome da sua ONG"
-                      marginBottom="1rem"
-                      borderColor="gray.700"
-                      backgroundColor="gray.700"
-                      color="gray.100"
-                      isRequired
-                    />
-                  </InputGroup>
-                  <InputGroup>
-                    <InputLeftElement pointerEvents="none">
-                      <FiTool color={theme.colors.gray["500"]} />
-                    </InputLeftElement>
-                    <Input
-                      {...registerOng("service")}
-                      name="service"
-                      title="Qual serviço seu ONG atende?"
-                      placeholder="Serviço"
-                      marginBottom="1rem"
-                      borderColor="gray.700"
-                      backgroundColor="gray.700"
-                      color="gray.100"
-                      isRequired
-                    />
-                  </InputGroup>
-                  <InputGroup>
-                    <InputLeftElement pointerEvents="none">
-                      <FiLock color={theme.colors.gray["500"]} />
-                    </InputLeftElement>
-                    <Input
-                      {...registerOng("password")}
-                      name="password"
-                      placeholder="Sua senha"
-                      borderColor="gray.700"
-                      marginBottom="1rem"
-                      backgroundColor="gray.700"
-                      color="gray.100"
-                      type="password"
-                      isRequired
-                    />
-                  </InputGroup>
-
-                  <InputGroup>
-                    <InputLeftElement pointerEvents="none">
-                      <FiLock color={theme.colors.gray["500"]} />
-                    </InputLeftElement>
-                    <Input
-                      {...registerOng("confirmpassword")}
-                      name="confirmpassword"
-                      placeholder="Confirme sua senha"
-                      borderColor="gray.700"
-                      backgroundColor="gray.700"
-                      color="gray.100"
-                      type="password"
-                      isRequired
-                    />
-                  </InputGroup>
-
-                  <Flex direction="column" alignItems="center">
-                    {pageState.error !== "" && (
-                      <Alert status="error" marginTop="2rem" borderRadius={10}>
-                        <AlertIcon />
-                        <AlertTitle>Alerta:</AlertTitle>
-                        <AlertDescription>{pageState.error}</AlertDescription>
-                      </Alert>
-                    )}
-                    {pageState.ok && (
-                      <Alert
-                        status="success"
-                        marginTop="2rem"
-                        borderRadius={10}
+                  <Flex direction="row">
+                    <Box width="30rem" pr={"2%"}>
+                      <Text
+                        color="gray.100"
+                        fontSize="xx-large"
+                        textAlign="center"
+                        fontFamily="heading"
+                        fontWeight={800}
+                        marginBottom="2rem"
                       >
-                        <AlertIcon />
-                        <AlertTitle>Parabéns:</AlertTitle>
-                        <AlertDescription>
-                          cadastro foi realizado com sucesso
-                        </AlertDescription>
-                      </Alert>
-                    )}
+                        Cadastro de ONG
+                      </Text>
+                      <InputGroup>
+                        <InputLeftElement pointerEvents="none">
+                          <FiMail color={theme.colors.gray["500"]} />
+                        </InputLeftElement>
+                        <Input
+                          {...registerOng("email")}
+                          name="email"
+                          placeholder="E-mail"
+                          marginBottom="1rem"
+                          borderColor="gray.700"
+                          backgroundColor="gray.700"
+                          color="gray.100"
+                          isRequired
+                        />
+                      </InputGroup>
+                      <InputGroup>
+                        <InputLeftElement pointerEvents="none">
+                          <FiBriefcase color={theme.colors.gray["500"]} />
+                        </InputLeftElement>
+                        <Input
+                          {...registerOng("name")}
+                          name="name"
+                          placeholder="Nome da sua ONG"
+                          marginBottom="1rem"
+                          borderColor="gray.700"
+                          backgroundColor="gray.700"
+                          color="gray.100"
+                          isRequired
+                        />
+                      </InputGroup>
+                      <InputGroup>
+                        <InputLeftElement pointerEvents="none">
+                          <FiTool color={theme.colors.gray["500"]} />
+                        </InputLeftElement>
+                        <Input
+                          {...registerOng("service")}
+                          name="service"
+                          title="Qual serviço seu ONG atende?"
+                          placeholder="Serviço"
+                          marginBottom="1rem"
+                          borderColor="gray.700"
+                          backgroundColor="gray.700"
+                          color="gray.100"
+                          isRequired
+                        />
+                      </InputGroup>
+                      <InputGroup>
+                        <InputLeftElement pointerEvents="none">
+                          <FiLock color={theme.colors.gray["500"]} />
+                        </InputLeftElement>
+                        <Input
+                          {...registerOng("password")}
+                          name="password"
+                          placeholder="Sua senha"
+                          borderColor="gray.700"
+                          marginBottom="1rem"
+                          backgroundColor="gray.700"
+                          color="gray.100"
+                          type="password"
+                          isRequired
+                        />
+                      </InputGroup>
+
+                      <InputGroup>
+                        <InputLeftElement pointerEvents="none">
+                          <FiLock color={theme.colors.gray["500"]} />
+                        </InputLeftElement>
+                        <Input
+                          {...registerOng("confirmpassword")}
+                          name="confirmpassword"
+                          placeholder="Confirme sua senha"
+                          borderColor="gray.700"
+                          backgroundColor="gray.700"
+                          color="gray.100"
+                          type="password"
+                          isRequired
+                        />
+                      </InputGroup>
+
+                      <Flex direction="column" alignItems="center">
+                        {pageState.error !== "" && (
+                          <Alert
+                            status="error"
+                            marginTop="2rem"
+                            borderRadius={10}
+                          >
+                            <AlertIcon />
+                            <AlertTitle>Alerta:</AlertTitle>
+                            <AlertDescription>
+                              {pageState.error}
+                            </AlertDescription>
+                          </Alert>
+                        )}
+                        {pageState.ok && (
+                          <Alert
+                            status="success"
+                            marginTop="2rem"
+                            borderRadius={10}
+                          >
+                            <AlertIcon />
+                            <AlertTitle>Parabéns:</AlertTitle>
+                            <AlertDescription>
+                              cadastro foi realizado com sucesso
+                            </AlertDescription>
+                          </Alert>
+                        )}
+                      </Flex>
+                    </Box>
+                    <Box width="30rem">
+                      <Text
+                        color="gray.100"
+                        fontSize="xx-large"
+                        textAlign="center"
+                        fontFamily="heading"
+                        fontWeight={800}
+                        marginBottom="2rem"
+                      >
+                        Mapa
+                      </Text>
+                      <InputGroup>
+                        <InputLeftElement pointerEvents="none">
+                          <FiMap color={theme.colors.gray["500"]} />
+                        </InputLeftElement>
+                      </InputGroup>
+                      <MapPage
+                        onSaveLocation={setLocation}
+                        onSaveAddress={setAddress}
+                      />
+                    </Box>
+                  </Flex>
+                  <Flex direction={"column"} alignItems="center">
                     <Button
                       type="submit"
                       marginTop="2rem"
                       marginBottom="3rem"
-                      width="100%"
                       backgroundColor="secondary.500"
                       _hover={{ backgroundColor: "secondary.600" }}
                       textTransform="uppercase"
+                      w="30rem"
                     >
                       Cadastrar
                     </Button>
-
                     <LinkNext href="/">
                       <Link color="gray.100">
                         <Text
@@ -433,7 +481,7 @@ function SignUp() {
                       </Link>
                     </LinkNext>
                   </Flex>
-                </Box>
+                </Flex>
               </form>
             </TabPanel>
           </TabPanels>

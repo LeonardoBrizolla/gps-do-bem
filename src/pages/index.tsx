@@ -12,7 +12,7 @@ import {
   InputLeftElement,
   Link,
   Text,
-  useTheme
+  useTheme,
 } from "@chakra-ui/react";
 import { FiLock, FiUser } from "react-icons/fi";
 import { FaGoogle } from "react-icons/fa";
@@ -34,12 +34,12 @@ const Home: NextPage = () => {
   const { register, handleSubmit } = useForm();
   const [pageState, setPageState] = useState<PageStateProps>({
     error: "",
-    processing: false
+    processing: false,
   });
 
   function simplifyError(error: string) {
     const errorMap: any = {
-      CredentialsSignin: "E-mail ou senha inválidos"
+      CredentialsSignin: "E-mail ou senha inválidos",
     };
     return errorMap[error] ?? "Algo deu errado";
   }
@@ -51,13 +51,13 @@ const Home: NextPage = () => {
       email: data.email,
       password: data.password,
       redirect: false,
-      callbackUrl: `${window.location.origin}/home`
+      callbackUrl: `${window.location.origin}/home`,
     })
       .then((res: any) => {
         if (res?.ok) {
           setPageState((old) => ({
             ...old,
-            processing: false
+            processing: false,
           }));
 
           router.push(res.url);
@@ -65,7 +65,7 @@ const Home: NextPage = () => {
           setPageState((old) => ({
             ...old,
             processing: false,
-            error: res.error ?? "Algo deu errado"
+            error: res.error ?? "Algo deu errado",
           }));
         }
       })
@@ -73,7 +73,7 @@ const Home: NextPage = () => {
         setPageState((old) => ({
           ...old,
           processing: false,
-          error: err.error ?? "Algo deu errado"
+          error: err.error ?? "Algo deu errado",
         }));
       });
   }
@@ -193,15 +193,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
       redirect: {
         destination: "/home",
-        permanent: false
-      }
+        permanent: false,
+      },
     };
   }
 
   return {
     props: {
-      session
-    }
+      session,
+    },
   };
 };
 
