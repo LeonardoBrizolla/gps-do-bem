@@ -8,8 +8,8 @@ import {
 import {
   GoogleMap,
   LoadScript,
-  Marker,
   StandaloneSearchBox,
+  MarkerF,
 } from "@react-google-maps/api";
 import React from "react";
 import { FiMap } from "react-icons/fi";
@@ -22,6 +22,7 @@ const MapPage = ({ onSaveLocation, onSaveAddress }: any) => {
     lat: -29.17365527454849,
     lng: -51.21886980105756,
   });
+
   const [map, setMap] = React.useState<google.maps.Map>();
   const [searchBox, setSearchBox] =
     React.useState<google.maps.places.SearchBox>();
@@ -86,7 +87,7 @@ const MapPage = ({ onSaveLocation, onSaveAddress }: any) => {
           center={position}
           zoom={15}
         >
-          <Marker position={position} />
+          <MarkerF position={position} label="leo" />
         </GoogleMap>
       </LoadScript>
     </Flex>

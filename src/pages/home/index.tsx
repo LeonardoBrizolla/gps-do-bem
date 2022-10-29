@@ -15,6 +15,14 @@ import {
   AlertIcon,
   AlertTitle,
   AlertDescription,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { getSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
@@ -25,6 +33,7 @@ import api from "../../services/api";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import { GoogleMap, MarkerF, useJsApiLoader } from "@react-google-maps/api";
 
 interface PageStateProps {
   error: string;
@@ -32,12 +41,14 @@ interface PageStateProps {
 }
 
 export default function Simple() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [pageState, setPageState] = useState<PageStateProps>({
     error: "",
     processing: false,
   });
   const { register, handleSubmit } = useForm();
   const [services, setServices] = useState([]) as any;
+  const [userSearch, setUserSearch] = useState({}) as any;
   const router = useRouter();
 
   function simplifyError(error: string) {
@@ -46,6 +57,11 @@ export default function Simple() {
     };
     return errorMap[error] ?? "Serviço não encontrado";
   }
+
+  const { isLoaded } = useJsApiLoader({
+    id: "google-map-script",
+    googleMapsApiKey: process.env.GOOGLE_MAP_API_KEY || "",
+  });
 
   async function handlePesquisaOng(serviceOng: any) {
     setPageState((old) => ({ ...old, processing: true, error: "" }));
@@ -83,6 +99,50 @@ export default function Simple() {
         }));
       });
   }
+
+  async function handleSearchMap(event: any) {
+    const id = event.target.id;
+
+    await api
+      .post("/user", { _id: id })
+      .then((res: any) => setUserSearch(res.data.user))
+      .catch((err) => console.log(err));
+
+    onOpen();
+  }
+
+  function renderMap(user: any) {
+    return (
+      <>
+        <Text>Endereço: {user.address}</Text>
+        <Flex h="20rem">
+          {isLoaded ? (
+            <GoogleMap
+              mapContainerStyle={{
+                width: "100%",
+                height: "100%",
+              }}
+              center={user?.location}
+              zoom={15}
+            >
+              <MarkerF
+                position={user?.location}
+                label={{
+                  text: user.name,
+                  fontSize: "18px",
+                  fontWeight: "bold",
+                }}
+                animation={google.maps.Animation.DROP}
+              />
+            </GoogleMap>
+          ) : (
+            <></>
+          )}
+        </Flex>
+      </>
+    );
+  }
+
   return (
     <>
       <Head>
@@ -123,7 +183,7 @@ export default function Simple() {
               </Text>
               <form onSubmit={handleSubmit(handlePesquisaOng)}>
                 <Stack
-                  direction={"row"}
+                  direction={{ base: "column", md: "row" }}
                   spacing={3}
                   align={"center"}
                   alignSelf={"center"}
@@ -138,9 +198,7 @@ export default function Simple() {
                     color={useColorModeValue("gray.800", "gray.200")}
                     bg={useColorModeValue("gray.100", "gray.600")}
                     rounded={"base"}
-                    maxW={"xl"}
-                    w="auto"
-                    minW={"sm"}
+                    w={{ base: "auto", md: "25rem", sm: "25rem" }}
                     size={"lg"}
                     fontFamily="Roboto"
                     border={0}
@@ -196,17 +254,16 @@ export default function Simple() {
                   </Text>
                 </Flex>
                 <Flex
-                  maxWidth={"container.lg"}
+                  maxWidth={"container.xl"}
                   alignItems={"center"}
                   justifyContent={"space-around"}
-                  marginTop={"5"}
-                  gap={"10"}
                   flexWrap={"wrap"}
                 >
                   {services[0]?.user?.map((item: any) => (
-                    <Center py={6} key={item._id} maxW={"200px"}>
+                    <Center py={5} key={item._id} minW={"300px"}>
                       <Box
-                        maxW={"270px"}
+                        minW={"270px"}
+                        minH={"350px"}
                         w={"full"}
                         bg="gray.100"
                         boxShadow={"2xl"}
@@ -254,19 +311,52 @@ export default function Simple() {
                             justifyContent={"flex-end"}
                             alignItems={"flex-end"}
                           >
-                            <Button
-                              w={"full"}
-                              // mt={8}
-                              bg="#151f21"
-                              color={"gray.100"}
-                              rounded={"md"}
-                              _hover={{
-                                transform: "translateY(-2px)",
-                                boxShadow: "lg",
-                              }}
-                            >
-                              Mais Informações
-                            </Button>
+                            {!!item.address && (
+                              <Button
+                                id={item._id}
+                                w={"full"}
+                                bg="linear-gradient(to bottom, rgb(123, 0, 255, 0.9), rgb(250, 8, 255, 0.87))"
+                                color={"gray.100"}
+                                rounded={"md"}
+                                _hover={{
+                                  transform: "translateY(-2px)",
+                                  boxShadow: "lg",
+                                }}
+                                onClick={handleSearchMap}
+                              >
+                                Geolocalização
+                              </Button>
+                            )}
+                            {!!userSearch.address &&
+                              item._id === userSearch._id && (
+                                <Modal isOpen={isOpen} onClose={onClose}>
+                                  <ModalOverlay />
+                                  <ModalContent>
+                                    <ModalHeader>
+                                      Geolocalização da ONG {item.name}
+                                    </ModalHeader>
+                                    <ModalCloseButton />
+                                    <ModalBody flexDirection={"column"}>
+                                      {!!userSearch.address &&
+                                      item._id === userSearch._id ? (
+                                        renderMap(userSearch)
+                                      ) : (
+                                        <></>
+                                      )}
+                                    </ModalBody>
+
+                                    <ModalFooter>
+                                      <Button
+                                        colorScheme="red"
+                                        mr={3}
+                                        onClick={onClose}
+                                      >
+                                        Close
+                                      </Button>
+                                    </ModalFooter>
+                                  </ModalContent>
+                                </Modal>
+                              )}
                           </Flex>
                         </Box>
                       </Box>
