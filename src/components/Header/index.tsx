@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import {
   Box,
   Flex,
@@ -11,9 +11,7 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  // MenuDivider,
   useDisclosure,
-  // Stack,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -21,6 +19,7 @@ import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { useSession, signOut } from "next-auth/react";
 import { FiChevronDown } from "react-icons/fi";
 import LinkNext from "next/link";
+import api from "../../services/api";
 
 const Links = ["Fale Conosco"];
 
@@ -44,6 +43,16 @@ const NavLink = ({ children }: { children: ReactNode }) => (
 export function Header() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { data: session } = useSession();
+  const [idUser, setIdUser] = useState();
+
+  useEffect(() => {
+    let email = session?.user?.email;
+
+    api
+      .post("/userEmail", { email: email })
+      .then((res: any) => setIdUser(res.data.user[0]._id))
+      .catch((err) => console.log(err));
+  }, [session]);
 
   return (
     <Box bg={"gray.900"} px={4} position="fixed" w="100%" zIndex={"500"}>
@@ -106,23 +115,14 @@ export function Header() {
               </HStack>
             </MenuButton>
             <MenuList>
-              {/* <MenuItem>Editar Cadastro</MenuItem> */}
-              {/* <MenuDivider /> */}
+              <LinkNext href={`/editProfile/${idUser}`}>
+                <MenuItem>Editar perfil</MenuItem>
+              </LinkNext>
               <MenuItem onClick={() => signOut()}>Sair</MenuItem>
             </MenuList>
           </Menu>
         </Flex>
       </Flex>
-
-      {/* {isOpen ? (
-        <Box pb={4} display={{ md: "none" }}>
-          <Stack as={"nav"} spacing={4}>
-            {Links.map((link) => (
-              <NavLink key={link}>{link}</NavLink>
-            ))}
-          </Stack>
-        </Box>
-      ) : null} */}
     </Box>
   );
 }

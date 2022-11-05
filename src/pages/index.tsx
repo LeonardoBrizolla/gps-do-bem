@@ -17,7 +17,7 @@ import {
 import { FiLock, FiUser } from "react-icons/fi";
 import { FaGoogle } from "react-icons/fa";
 import Head from "next/head";
-import { signIn, getSession, useSession } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { useRouter } from "next/router";

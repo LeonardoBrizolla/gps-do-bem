@@ -26,7 +26,7 @@ export default NextAuth({
             const newUser = {
               name: user.name,
               email: user.email,
-              token,
+              token: token,
               image: null
             };
 
